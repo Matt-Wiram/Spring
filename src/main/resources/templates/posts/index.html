@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Join</title>
+</head>
+<body>
+
+<div th:each="item : ${id}">
+    <p th:text="${item}" />
+    <form method="post" action="/roll/dice" >
+        <button th:text="${item}" th:attr="value=${item}" name="id" type="submit"/>
+    </form>
+</div>
+
+</body>
+</html>

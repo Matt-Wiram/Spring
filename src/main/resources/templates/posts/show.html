@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Join</title>
+</head>
+<body>
+
+<div th:each="item : ${email}">
+    <p th:text="${item}" />
+
+</div>
+<div th:each="ite : ${posts}">
+    <p th:text="${ite}" />
+
+</div>
+
+</body>
+</html>

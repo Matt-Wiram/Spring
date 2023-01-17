@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Join</title>
+</head>
+<body>
+
+<div th:each="item : ${ads}">
+    <p th:text="${item.getId()}" />
+
+</div>
+<div th:each="item : ${post}">
+    <p th:text="${item}" />
+
+</div>
+
+</body>
+</html>

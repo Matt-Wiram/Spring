@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Join</title>
+</head>
+<body>
+
+<div th:each="id : ${id}">
+    Your rolled a :
+    <p th:text="${id}" />
+
+</div>
+<div th:each="n: ${n}">
+    You guessed :
+    <p th:text="${n}" />
+
+</div>
+<div th:each="bool : ${check}">
+    So the outcome is :
+    <p th:text="${bool}"></p>
+</div>
+
+</body>
+</html>
