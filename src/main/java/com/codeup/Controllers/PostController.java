@@ -113,9 +113,13 @@ public class PostController {
     String ret(@PathVariable String n, Model model ) {
         int rando = (int) Math.floor(Math.random() * 6 + 1);
         boolean check = String.valueOf(rando).equals(n);
+        String win;
         if (check) {
-            model.addAttribute("check", check);
-        } else model.addAttribute("check", check);
+            win = "You won the game";
+        } else {
+            win = "You lost the game";
+        }
+        model.addAttribute("check", win);
         model.addAttribute("id", String.valueOf(rando));
         model.addAttribute("n", n);
         return "check";
