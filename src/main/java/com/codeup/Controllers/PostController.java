@@ -1,41 +1,65 @@
 package com.codeup.Controllers;
+import com.codeup.Services.EmailServiceslmp1;
 import com.codeup.entity.Post;
 import com.codeup.entity.User;
+import com.codeup.entity.UserWithRoles;
 import com.codeup.repository.PostRepository;
 import com.codeup.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import com.codeup.Services.PostService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import java.awt.print.Pageable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 
 public class PostController {
-
+    private final EmailServiceslmp1 emailService;
     private final PostRepository p;
+
     private final UserRepository userRepository;
 
+
+
     public PostController(PostRepository p,
-                          UserRepository userRepository) {
+                          UserRepository userRepository, EmailServiceslmp1 emailService) {
         this.p = p;
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
-    @GetMapping("/show")
-    public String show(HttpServletRequest httpServletRequest, Model model) {
-        Post post = (Post)httpServletRequest.getSession().getAttribute("post");
-        User user = userRepository.getById(post.getUser().getId());
-        model.addAttribute("email", user.getEmail());
-        model.addAttribute("posts", post.getBody());
+    @GetMapping("/posts/edit")
+    public String edit(Model model) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(user);
+        List<Post> posts = p.findPostsByUserId(user.getId());
+        model.addAttribute("posts", posts);
+        return "posts/edit";
+    }
+    @PostMapping("/posts/edit")
+    public String edited(@RequestParam("title") String title, @RequestParam("body") String body, @RequestParam(name = "id") long id) {
+
+        Post post = p.getById(id);
+        post.setBody(body);
+        post.setTitle(title);
+        p.save(post);
+        return "redirect:/posts/show";
+    }
+
+    @GetMapping("/posts/show")
+    public String show(Model model) {
+
+        UserWithRoles user = (UserWithRoles) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        List<Post> posts = p.findPostsByUserId(user.getId());
+        model.addAttribute("posts", posts);
+
         return "posts/show";
     }
 
@@ -44,19 +68,24 @@ public class PostController {
 
 
         model.addAttribute("ads", p.findAll());
-        return "posts/create";
+        return "posts/creat";
     }
 
-    @PostMapping(path = "/posts/creat")
-    void posts(Model model, @RequestParam(name = "title") String title, @RequestParam(name = "body") String body, HttpServletResponse servletResponse, HttpServletRequest httpServletRequest) throws IOException {
-            User user = userRepository.getById(1);
-            Post post = new Post(title, body, user);
+    @PostMapping(path = "posts/creat")
+    String posts(Model model, @RequestParam(name = "title") Optional<String> title, @RequestParam(name = "body") Optional<String> body, @RequestParam(name = "idd") Optional<Long> id) throws IOException {
+        if (id.isEmpty()) {
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Post post = new Post(title.get(), body.get(), user);
             p.save(post);
+            emailService.prepareAndSend(post, "You sent a new post", post.getBody());
             model.addAttribute("post", post);
+        } else {
 
+            p.deleteById(id.get());
+        }
 
-        httpServletRequest.getSession().setAttribute("post", post);
-        servletResponse.sendRedirect("/show");
+        return "redirect:/profile";
+
 
     }
 
@@ -66,19 +95,20 @@ public class PostController {
     @RequestMapping(path = "/posts", method = RequestMethod.GET)
     @ResponseBody
 
-    public String addOne() {
-        return "null and void";
+    public String addOne(Model model) {
+
+        List<Post> posts = p.findAll();
+        model.addAttribute("id", posts);
+        return p.getById(Long.valueOf(24)).getBody();
     }
     @RequestMapping(path = "/posts/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String addOn(@PathVariable String id) {
-        return id;
+    public String addOn(@PathVariable String id, Model model) {
+        Post post = p.getById(Long.valueOf(id));
+        model.addAttribute(post);
+        return post.toString();
     }
 
-    @RequestMapping(path = "/posts/create", method = RequestMethod.GET)
-    public String addO() {
-        return "page";
-    }
 
     @RequestMapping(path = "/posts/created", method = RequestMethod.GET)
     @ResponseBody
@@ -101,11 +131,11 @@ public class PostController {
     }
 
     @PostMapping(path="/roll/dice")
-    void id(@RequestParam(name = "id") String idd, HttpServletResponse httpResponse, Model model ) throws Exception{
+    void id(@RequestParam(name = "id") String idd, Model model ) throws Exception{
         System.out.println(idd);
         model.addAttribute("id", idd);
         System.out.println(idd);
-        httpResponse.sendRedirect("/roll/" + idd);
+
 
     }
     @RequestMapping(path = "/roll/{n}", method = RequestMethod.GET)
@@ -125,17 +155,17 @@ public class PostController {
         return "check";
     }
 
-
-    @PostMapping(path="/posts/create")
-    @ResponseBody
-    public String getName(
-            @RequestParam(name = "name") String name,@RequestParam(name="input") String input, Model model) {
-        name += "123";
-        model.addAttribute(name);
-        model.addAttribute(input);
-
-        return name + input;
-    }
+//
+//    @PostMapping(path="/posts/create")
+//    @ResponseBody
+//    public String getName(
+//            @RequestParam(name = "name") String name,@RequestParam(name="input") String input, Model model) {
+//        name += "123";
+//        model.addAttribute(name);
+//        model.addAttribute(input);
+//
+//        return name + input;
+//    }
 
 
 }

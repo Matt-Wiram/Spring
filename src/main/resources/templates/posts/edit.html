@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Join</title>
+</head>
+<body>
+
+<div th:each="item : ${posts}">
+    <form method="post" action="posts/edit" >
+  <p th:text="${item.title}"/>
+    <input  name="title" />
+    <p th:text="${item.body}"/>
+    <input name="body" />
+    <button type="submit" name="id" th:value="${item.id}">Edit</button>
+    </form>
+</div>
+
+
+
+
+
+</body>
+</html>

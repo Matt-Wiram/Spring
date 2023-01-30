@@ -1,4 +1,4 @@
 package com.codeup.Services;
 
-public class EmailService {
+public interface EmailService {
 }

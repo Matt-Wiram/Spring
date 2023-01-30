@@ -5,16 +5,8 @@ import com.codeup.repository.PostRepository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
 
 import com.codeup.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 @Service
 public class PostServiceImp1 implements PostService{
@@ -29,6 +21,21 @@ public class PostServiceImp1 implements PostService{
     @Override
     public Post savePost(Post post) {
         return postRepository.save(post);
+    }
+
+    @Override
+    public List<Post> findPostByUserId(long id) {
+        return null;
+    }
+
+    @Override
+    public List<Post> findPostsByUserId(long id) {
+        return postRepository.findPostsByUserId(id);
+
+    }
+    @Override
+    public int updateTitleAndBodyById(String title, String body, long id) {
+        return postRepository.updateTitleAndBodyById(title, body, id);
     }
 
     @Override

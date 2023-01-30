@@ -7,10 +7,8 @@
 <body>
 
 <div th:each="item : ${id}">
-    <p th:text="${item}" />
-    <form method="post" action="/roll/dice" >
-        <button th:text="${item}" th:attr="value=${item}" name="id" type="submit"/>
-    </form>
+    <p th:object = "${item}"></p>
+
 </div>
 
 </body>

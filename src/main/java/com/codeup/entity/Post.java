@@ -8,7 +8,7 @@ import org.springframework.boot.info.InfoProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Data
@@ -28,6 +28,7 @@ public class Post  {
 
     @Column(nullable = false, length = 100)
         private String body;
+
 
     @OneToOne
     private User user;

@@ -1,0 +1,53 @@
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+
+
+<body>
+<nav>
+    <ul>
+
+        <li>
+            <form th:action="@{/logout}" th:method="post">
+                <button class="btn-link btn" style="margin-top: 8px">Logout</button>
+            </form>
+        </li>
+    </ul>
+</nav>
+
+<h1>Log In</h1>
+<div th:if="${param.error}">
+    Invalid Username and Password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+
+
+<div class="container mb-4">
+    <form th:action="@{/login}" method="post" sec:authorize="!isAuthenticated()">
+        <div class="row g-3">
+            <div class="input-group mb-3 col-sm-5">
+                <span class="input-group-text">Username</span>
+                <input id="username" type="text" name="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3 col-sm-5">
+                <span class="input-group-text">Password</span>
+                <input id="password" type="password" name="password" class="form-control" placeholder="Password" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            <input class="btn btn-primary col-sm-2" type="submit" value="Log In" />
+        </div>
+    </form>
+</div>
+
+<div class="container mb-4 row" sec:authorize="!isAuthenticated()">
+    <label for="create-account">Don't have an account? Click here to create one.</label>
+    <a href="/register"><button id="create-account" class="btn btn-warning">Create an account</button></a>
+</div>
+
+
+</body>
+</html>

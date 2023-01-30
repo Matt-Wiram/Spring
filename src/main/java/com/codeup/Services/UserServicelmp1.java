@@ -25,6 +25,7 @@ public class UserServicelmp1 implements UserService {
     }
 
     @Override
+
     public User updateUser(User user, Long id) {
         User userDB
                 =  userRepository.getById(id);
@@ -60,5 +61,10 @@ public class UserServicelmp1 implements UserService {
     @Override
     public void deleteUserById(Long id) {
             userRepository.deleteById(id);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }
